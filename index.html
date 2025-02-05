@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine?</title>
+    <style>
+        /* Import a romantic font */
+        @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+
+        body {
+            font-family: 'Great Vibes', cursive;
+            background: url('https://images.unsplash.com/photo-1583974683357-2c2c55b7d3e6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        h1 {
+            font-size: 2em;
+            color: #ff4d4d;
+            margin-bottom: 15px;
+        }
+
+        p {
+            font-size: 1.1em;
+            color: #ffe6e6;
+            margin-bottom: 25px;
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .button {
+            padding: 15px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            background-color: black;
+            color: red;
+            width: 100%;
+        }
+
+        .button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(255, 0, 0, 0.3);
+        }
+
+        .response-message {
+            display: none;
+            font-size: 1.4em;
+            color: #ff4d4d;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cornelia,</h1>
+        <p>Will you be my Valentine?❤️</p>
+        <form id="valentineForm">
+            <div class="buttons">
+                <button type="submit" class="button yes" value="Yes 😊">Yes 😊</button>
+                <button type="submit" class="button no" value="No 😠">No 😠</button>
+            </div>
+        </form>
+        <div class="response-message"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('valentineForm');
+        const responseMessage = document.querySelector('.response-message');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            // Get the value of the clicked button
+            const response = event.submitter.value;
+
+            // Show response message based on her choice
+            if (response === 'Yes 😊') {
+                responseMessage.textContent = 'Thank youuu 🎉, see you on Friday the 14th\'s night. Love you ❤️';
+            } else if (response === 'No 😠') {
+                responseMessage.textContent = 'Ouch, I don\'t think Chris saw this coming 😢';
+            }
+
+            // Display the response message
+            responseMessage.style.display = 'block';
+            Array.from(form.elements).forEach(element => element.style.display = 'none');
+
+            // Send response to the server
+            try {
+                const res = await fetch('/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ response }) // Send the response value
+                });
+                const data = await res.json();
+                console.log(data.message); // Log server response
+            } catch (error) {
+                console.error('Error submitting response:', error);
+            }
+        });
+    </script>
+</body>
+</html>
